@@ -4,6 +4,18 @@ import datetime
 import numpy as np
 import streamlit as st
 import onnxruntime as ort
+import sys, os
+st.caption(f"Python: {sys.version.split()[0]}")
+try:
+    st.caption(f"ONNX Runtime: {ort.__version__} | Providers: {ort.get_available_providers()}")
+except Exception as e:
+    st.error(f"onnxruntime import failed: {e}")
+
+# Ensure the model file is present where the app expects it
+MODEL_PATH = "unit2mwbig_model.onnx"
+if not os.path.exists(MODEL_PATH):
+    st.error(f"Model file not found: {MODEL_PATH}. Check file name/location in the repo root.")
+    st.stop()
 
 # -------------------- Page Configuration --------------------
 st.set_page_config(page_title="Unit 2 MW Prediction", layout="centered")
@@ -176,3 +188,4 @@ with st.expander(l["model_info"]):
     for name, val in importance_list:
         bar = "█" * int(val * 20)
         st.write(f"{name}: {bar} {int(val * 100)}%")
+
